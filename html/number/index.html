@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="../rxjs/index.js"></script>
+  </head>
+  <body>
+    <input id="range" type="number" />
+    <button id="update">Update</button>
+    <h3 id="display">0</h3>
+    <script>
+      const {
+        operators: { map, switchMap, scan, takeWhile, tap, startWith, mapTo },
+        fromEvent,
+        timer,
+        interval,
+      } = rxjs;
+      const input$ = fromEvent(update, "click");
+
+      //更具每次数据和目标值的大小来给给定不同的函数
+      const Func = (end, cur) => (end > cur ? v => v <= end : v => v >= end);
+
+      //数据改变方向
+      const positiveOrNegative = (end, current) => (end > current ? 1 : -1);
+
+      //赋值
+      const updateHTML = id => val => (id.innerHTML = val);
+
+      const subscription = (currentNumber =>
+        input$
+          .pipe(
+            tap(val => console.log(`Event: ${val}`)),
+            map(_ => parseInt(range.value)),
+            tap(val => console.log(`State: ${val}`)),
+            switchMap(endRange =>
+              timer(0, 1).pipe(
+                tap(() =>
+                  console.log(`Timer: ${currentNumber} 目标值 ${endRange}`)
+                ),
+                mapTo(positiveOrNegative(endRange, currentNumber)),
+                tap(val => console.log(`Mapto: ${val}`)),
+                scan((acc, curr) => acc + curr, currentNumber),
+                takeWhile(Func(endRange, currentNumber))
+              )
+            ),
+            tap(v => (currentNumber = v)),
+            startWith(currentNumber)
+          )
+          .subscribe(updateHTML("display")))(0);
+    </script>
+  </body>
+</html>
