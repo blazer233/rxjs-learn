@@ -26,7 +26,9 @@
       const positiveOrNegative = (end, current) => (end > current ? 1 : -1);
 
       //赋值
-      const updateHTML = id => val => (id.innerHTML = val);
+      const updateHTML = id => val => {
+        document.getElementById(id).innerHTML = val;
+      };
 
       const subscription = (currentNumber =>
         input$
