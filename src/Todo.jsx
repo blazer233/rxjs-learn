@@ -12,7 +12,7 @@ const Todo = ({ todo, toggleTodo, removeTodo }) => (
     <span className={todo.completed ? "todo-completed todo-text" : "todo-text"}>
       {todo.text}
     </span>
-    <button onClick={() => removeTodo(todo.id)}>x</button>
+    <button onClick={() => removeTodo(todo.id)}> x </button>
   </div>
 );
 

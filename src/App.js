@@ -1,21 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import "./App.css";
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <AddTodo addTodo={this.props.addTodo} />
-        <TodoList
-          todos={this.props.todos}
-          removeTodo={this.props.removeTodo}
-          toggleTodo={this.props.toggleTodo}
-        />
-      </div>
-    );
-  }
-}
-
-export default App;
+export default ({ addTodo, todos, removeTodo, toggleTodo }) => (
+  <div className="App">
+    <AddTodo addTodo={addTodo} />
+    <TodoList todos={todos} removeTodo={removeTodo} toggleTodo={toggleTodo} />
+  </div>
+);

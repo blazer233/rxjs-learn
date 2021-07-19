@@ -39,9 +39,11 @@ const toggleTodo = id => state => ({
     todo.id === id ? { ...todo, completed: !todo.completed } : todo
   ),
 });
+
 console.log(store);
 store
-  //acc:initialState f:x => x
+  //acc:initialState
+  //f:x => x
   .pipe(scan((acc, f) => f(acc), initialState))
   .subscribe(state => {
     console.log(state);
