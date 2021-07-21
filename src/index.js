@@ -40,11 +40,17 @@ const toggleTodo = id => state => ({
   ),
 });
 
+
 console.log(store);
 store
   //acc:initialState
   //f:x => x
-  .pipe(scan((acc, f) => f(acc), initialState))
+  .pipe(
+    scan((acc, f) => {
+      console.log(acc, f);
+      return f(acc);
+    }, initialState)
+  )
   .subscribe(state => {
     console.log(state);
     return ReactDOM.render(
