@@ -34,7 +34,7 @@
         input$
           .pipe(
             tap(val => console.log(`Event: ${val}`)),
-            map(_ => parseInt(range.value)),
+            map(() => parseInt(range.value)),
             tap(val => console.log(`State: ${val}`)),
             switchMap(endRange =>
               timer(0, 1).pipe(
@@ -47,7 +47,6 @@
                 takeWhile(Func(endRange, currentNumber))
               )
             ),
-            tap(v => (currentNumber = v)),
             startWith(currentNumber)
           )
           .subscribe(updateHTML("display")))(0);
