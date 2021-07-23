@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>JS Bin</title>
+    <script src="../rxjs.js"></script>
+    <style>
+      @import "index.css";
+    </style>
+  </head>
+  <body>
+    <div id="anchor">
+      <div class="video" id="video">
+        <div class="masker"></div>
+        <video width="100%" controls>
+          <source
+            src="https://yzf.qq.com/xv-test/fsnb/kf-file/lx_video/20201229/LXVIDEO_lxo62m3q09_VIDEO_ODFRregDTqGNoFBIHxvi.mp4?s1=1614587267&s2=lEPlJLHmG4kBU5FMstevenwaliu&s3=3000&s4=cdfe77473ae1081e1e4502441dbd771906c5d918"
+          />
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+    </div>
+    <script>
+      const {
+        operators: {
+          switchMap,
+          map,
+          filter,
+          concatAll,
+          withLatestFrom,
+          takeUntil,
+        },
+        fromEvent,
+      } = rxjs;
+      const video = document.getElementById("video");
+      const anchor = document.getElementById("anchor");
+      const scroll = fromEvent(document, "scroll");
+      const mouseDown = fromEvent(video, "mousedown");
+      const mouseUp = fromEvent(document, "mouseup");
+      const mouseMove = fromEvent(document, "mousemove");
+      const validValue = (value, max, min) =>
+        Math.min(Math.max(value, min), max);
+
+      scroll
+        .pipe(map(() => anchor.getBoundingClientRect().bottom < 0))
+        .subscribe(bool => {
+          bool
+            ? video.classList.add("video-fixed")
+            : video.classList.remove("video-fixed");
+        });
+
+      mouseDown
+        .pipe(
+          filter(() => video.classList.contains("video-fixed")),
+          switchMap(() => mouseMove.pipe(takeUntil(mouseUp))),
+          withLatestFrom(mouseDown, (move, down) => ({
+            x: validValue(
+              move.clientX - down.offsetX,
+              window.innerWidth - 320,
+              0
+            ),
+            y: validValue(
+              move.clientY - down.offsetY,
+              window.innerHeight - 180,
+              0
+            ),
+          }))
+        )
+        .subscribe(pos => {
+          video.style.top = pos.y + "px";
+          video.style.left = pos.x + "px";
+        });
+    </script>
+  </body>
+</html>

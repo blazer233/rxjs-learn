@@ -15,7 +15,9 @@ function initialize() {
 
 initialize();
 
-export function paint({ clientX, clientY }) {
+export function paint(res) {
+  console.log(res.type);
+  let { clientX, clientY } = res;
   ctx.strokeStyle = `hsl(${colorHue}, 100%, 60%)`;
   ctx.beginPath();
   if (

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>RxJS - Drag And Drop</title>
+    <link rel="stylesheet" href="./index.css" />
+    <style>
+      #draggable {
+        width: 200px;
+        height: 200px;
+        border: 2px dashed black;
+        background-color: yellow;
+        line-height: 200px;
+        text-align: center;
+        font-size: 2em;
+        font-family: Helvetica;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="draggable">Drag Me!</div>
+    <script src="../rxjs.js"></script>
+    <script>
+      const {
+        operators: { takeUntil, switchMap, map, tap },
+        fromEvent,
+      } = rxjs;
+      const box = document.querySelector("#draggable");
+      const mousedown$ = fromEvent(box, "mousedown");
+      const mousemove$ = fromEvent(document, "mousemove");
+      const mouseup$ = fromEvent(document, "mouseup");
+
+      mousedown$
+        .pipe(
+          switchMap(mdEvent => {
+            const startPos = {
+              x: box.getBoundingClientRect().left,
+              y: box.getBoundingClientRect().top,
+            };
+            box.innerHTML = "Drag To!";
+            return mousemove$.pipe(
+              map(mmEvent => {
+                box.innerHTML = "Drag Move!";
+                return {
+                  x: mmEvent.x - (mdEvent.x - startPos.x),
+                  y: mmEvent.y - (mdEvent.y - startPos.y),
+                };
+              }),
+              takeUntil(mouseup$.pipe(tap(() => (box.innerHTML = "Drag Me!"))))
+            );
+          })
+        )
+        .subscribe(coor => {
+          box.style.left = `${coor.x}px`;
+          box.style.top = `${coor.y}px`;
+        });
+    </script>
+  </body>
+</html>

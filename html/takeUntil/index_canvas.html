@@ -29,7 +29,7 @@
     <script type="module">
       import { paint } from "./canvas.js";
       const {
-        operators: { takeUntil, mergeMap },
+        operators: { takeUntil, switchMap, concatAll, map },
         fromEvent,
       } = rxjs;
 
@@ -37,9 +37,11 @@
       const move$ = fromEvent(document, "mousemove");
       const up$ = fromEvent(document, "mouseup");
 
-      const paints$ = down$.pipe(mergeMap(down => move$.pipe(takeUntil(up$))));
-      //此时的流为 MouseEvent
-      paints$.subscribe(paint);
+      down$.pipe(switchMap(() => move$.pipe(takeUntil(up$)))).subscribe(paint);
+      /*
+         刚开始的 Mouse down 的流被 switchMap 之后变为一个个的 Mouse move 直到 Mouse up 发生时结束
+         对外输出的流最终为 Mouse move，也可以在 takeUntil 之前用 map 对流的返回进行处理
+      */
     </script>
   </body>
 </html>
