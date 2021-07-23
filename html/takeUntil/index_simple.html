@@ -41,15 +41,24 @@
               y: box.getBoundingClientRect().top,
             };
             box.innerHTML = "Drag To!";
+            console.log("Drag To!:" + mdEvent.type);
             return mousemove$.pipe(
               map(mmEvent => {
                 box.innerHTML = "Drag Move!";
+                console.log("Drag Move!:" + mmEvent.type);
                 return {
                   x: mmEvent.x - (mdEvent.x - startPos.x),
                   y: mmEvent.y - (mdEvent.y - startPos.y),
                 };
               }),
-              takeUntil(mouseup$.pipe(tap(() => (box.innerHTML = "Drag Me!"))))
+              takeUntil(
+                mouseup$.pipe(
+                  tap(mpEvent => {
+                    box.innerHTML = "Drag Me!";
+                    console.log("Drag Me!:" + mpEvent.type);
+                  })
+                )
+              )
             );
           })
         )

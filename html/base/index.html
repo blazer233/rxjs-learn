@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="../rxjs.js"></script>
+  </head>
+  <body>
+    <script>
+      let click$ = rxjs.fromEvent(document, "click");
+      let over = rxjs
+        .interval(500)
+        .pipe(rxjs.operators.take(400))
+        .subscribe(console.log);
+
+      /*
+      
+      test1
+
+      */
+      // click$
+      //   .pipe(rxjs.operators.filter(i => i.clientX % 2))
+      //   .subscribe(console.log);
+
+      /*
+      
+      test2
+
+      */
+      // let subject = new rxjs.Subject();
+      // click$
+      //   .pipe(
+      //     rxjs.operators.filter(i => i.clientX % 2),
+      //     rxjs.operators.take(4)
+      //   )
+      //   .subscribe(subject);
+
+      // let sub1$ = subject.subscribe(e => console.log("test2A", e));
+      // let sub2$ = subject.subscribe(e => console.log("test2B", e.clientX));
+    </script>
+  </body>
+</html>
